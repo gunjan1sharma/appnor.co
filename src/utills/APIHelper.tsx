@@ -1,4 +1,4 @@
-export const API_BASE_URLL = "http://192.168.1.88:9999/";
+export const API_BASE_URLL = "https://appnor-backend.onrender.com/";
 export const SHORTLINK = "appnor/v1/api/link/shortLink?";
 export const CHECKIDAVAILABILITY = "appnor/v1/api/link/checkIdAvailability?";
 export const FETCH_LINK = "appnor/v1/api/link/fetchLink?";
