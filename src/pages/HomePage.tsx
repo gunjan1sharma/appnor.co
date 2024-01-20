@@ -4,37 +4,18 @@ import {
   Checkbox,
   CircularProgress,
   Divider,
-  FormControl,
   IconButton,
-  InputLabel,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
   Tab,
   Tabs,
   TextField,
-  Tooltip,
 } from "@mui/material";
 import {
-  FacebookShareCount,
-  HatenaShareCount,
-  OKShareCount,
-  PinterestShareCount,
-  RedditShareCount,
-  TumblrShareCount,
-  VKShareCount,
   EmailShareButton,
   FacebookShareButton,
-  GabShareButton,
-  HatenaShareButton,
   InstapaperShareButton,
-  LineShareButton,
   LinkedinShareButton,
   LivejournalShareButton,
-  MailruShareButton,
-  OKShareButton,
   PinterestShareButton,
-  PocketShareButton,
   RedditShareButton,
   TelegramShareButton,
   TumblrShareButton,
@@ -60,10 +41,10 @@ import {
 } from "react-share";
 import DownloadImage from "../assets/images/download.png";
 import FeatureImage from "../assets/images/comingsoon.png";
+import ExpandLessOutlinedIcon from "@mui/icons-material/ExpandLessOutlined";
+import ExpandMoreOutlinedIcon from "@mui/icons-material/ExpandMoreOutlined";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import axios from "axios";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import { v4 as uuidv4 } from "uuid";
 import app from "../firebase-config";
 import {
   getAuth,
@@ -74,11 +55,10 @@ import FeatureIntro from "../components/FeatureIntro";
 import { ColorContext } from "../extras/ColorContext";
 import FeatureListPage from "../components/FeatureListPage";
 import { CopyToClipboard } from "react-copy-to-clipboard";
-import { link } from "fs/promises";
-import SingleLink from "../components/SingleLink";
 import {
   API_BASE_URLL,
   CHECKIDAVAILABILITY,
+  FETCHTITLE,
   SHORTLINK,
   sampleLinkShortedResponse,
 } from "../utills/APIHelper";
@@ -86,10 +66,6 @@ import { Root } from "../extras/types";
 
 const emailRegex =
   /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
-
-const API_BASE_URL = `https://appnor-backend.onrender.com/extras/v1/api/parsing/site-screenshot?siteUrl=`;
-//const API_BASE_URL = `http://192.168.1.88:9999/extras/v1/api/parsing/site-screenshot?siteUrl=`;
-const API_BASE_URL_PDF = `https://appnor-backend.onrender.com/extras/v1/api/parsing/site-screenshot-pdf?siteUrl=`;
 
 function HomePage(props: any) {
   const colorContex = useContext(ColorContext);
@@ -109,8 +85,17 @@ function HomePage(props: any) {
   const [linkId, setLinkId] = useState("");
   const [finalDeepLink, setFinalDeepLink] = useState("");
   const [isCreateAccount, setIsCreateAccount] = useState(true);
-
   const [tabValue, setTabValue] = useState(0);
+
+  const [advanceLinkOptions, setAdvanceLinkOptions] = useState(false);
+  const [title, setTitle] = useState<string | null>("");
+  const [mobileTarget, setMobileTarget] = useState("");
+  const [tabletTarget, setTabletTarget] = useState("");
+  const [desktopTarget, setDesktopTarget] = useState("");
+  const [iosTarget, setIosTarget] = useState("");
+  const [androidTarget, setAndroidTarget] = useState("");
+  const [windowsTarget, setWindowsTarget] = useState("");
+  const [macTarget, setMacTarget] = useState("");
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
@@ -120,6 +105,14 @@ function HomePage(props: any) {
     scrollToDiv();
     return () => {};
   }, [colorContex.point]);
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      requestSiteMetaFromServer();
+    }, 4000);
+
+    return () => clearTimeout(timeoutId);
+  }, [longLink]);
 
   function persistUser(data: string, userId: string) {
     if (localStorage.getItem(userId) === null) {
@@ -275,13 +268,13 @@ function HomePage(props: any) {
 
     const query_params = `longLink=${longLink}&linkId=${linkId}&userId=${localStorage.key(
       0
-    )}`;
+    )}&title=${title}`;
     axios
       .post<Root>(API_BASE_URLL + SHORTLINK + query_params)
       .then((response) => {
-        console.log(
-          `Link shorted successfully : ${JSON.stringify(response.data)}`
-        );
+        // console.log(
+        //   `Link shorted successfully : ${JSON.stringify(response.data)}`
+        // );
         setAudioResponse(response.data);
         setIsDownloadSuccess(true);
         setFinalDeepLink(response.data.shortedLinkData.completeShortLink);
@@ -349,6 +342,21 @@ function HomePage(props: any) {
 
   function scrollToLink() {
     linkResultRef.current.scrollIntoView({ behavior: "smooth" });
+  }
+
+  function requestSiteMetaFromServer() {
+    if (longLink === "" || longLink.length < 7) {
+      return;
+    }
+    axios
+      .get(API_BASE_URLL + FETCHTITLE + `siteUrl=${longLink}`)
+      .then((res) => {
+        console.log(`Title fetched successfully ${res.data["title"]}`);
+        setTitle(res.data["title"]);
+      })
+      .catch((err) => {
+        console.log(`Something went while fetching title : ${err}`);
+      });
   }
 
   function testLink() {
@@ -434,6 +442,124 @@ function HomePage(props: any) {
         </h3>
       </div>
       <Divider color="black" />
+    </React.Fragment>
+  );
+
+  const advnceToogle = (
+    <React.Fragment>
+      <div
+        onClick={() => setAdvanceLinkOptions(!advanceLinkOptions)}
+        className="flex items-center cursor-pointer text-start w-full mb-3 mt-3"
+      >
+        <h2 className="text-sm font-bold">Advance Link Options</h2>
+        <IconButton>
+          {!advanceLinkOptions ? (
+            <ExpandMoreOutlinedIcon />
+          ) : (
+            <ExpandLessOutlinedIcon />
+          )}
+        </IconButton>
+      </div>
+    </React.Fragment>
+  );
+
+  const linkAdvanceUI = (
+    <React.Fragment>
+      <TextField
+        fullWidth
+        value={title}
+        type="text"
+        onChange={(e) => setTitle(e.target.value)}
+        id="input-title"
+        label="Enter Custom Link Title"
+        variant="outlined"
+      />
+      <br />
+
+      <TextField
+        fullWidth
+        value={mobileTarget}
+        type="text"
+        onChange={(e) => setMacTarget(e.target.value)}
+        id="input-mobile"
+        label="Target Link on Mobile Devices (default)"
+        variant="outlined"
+      />
+      <br />
+
+      <TextField
+        fullWidth
+        value={tabletTarget}
+        type="text"
+        onChange={(e) => setTabletTarget(e.target.value)}
+        id="input-tablet"
+        label="Target Link on Tablet Devices"
+        variant="outlined"
+      />
+      <br />
+
+      <TextField
+        fullWidth
+        value={desktopTarget}
+        type="text"
+        onChange={(e) => setDesktopTarget(e.target.value)}
+        id="input-desktop"
+        label="Target Link on Desktop Computers"
+        variant="outlined"
+      />
+      <br />
+
+      <h2 className="text-sm text-start w-full mb-3 font-bold">
+        Advance OS Targetings
+      </h2>
+      <TextField
+        fullWidth
+        value={androidTarget}
+        type="text"
+        onChange={(e) => setAndroidTarget(e.target.value)}
+        id="input-android"
+        label="Target Link on Android OS"
+        variant="outlined"
+      />
+      <br />
+
+      <TextField
+        fullWidth
+        value={iosTarget}
+        type="text"
+        onChange={(e) => setIosTarget(e.target.value)}
+        id="input-ios"
+        label="Target Link on iOS"
+        variant="outlined"
+      />
+      <br />
+
+      <TextField
+        fullWidth
+        value={windowsTarget}
+        type="text"
+        onChange={(e) => setWindowsTarget(e.target.value)}
+        id="input-windows"
+        label="Target Link on Windows OS"
+        variant="outlined"
+      />
+      <br />
+
+      <TextField
+        fullWidth
+        value={macTarget}
+        type="text"
+        onChange={(e) => setMacTarget(e.target.value)}
+        id="input-mac"
+        label="Target Link on MacOS (Apple)"
+        variant="outlined"
+      />
+      <h2 className="text-xs text-gray-700 leading-relaxed text-start w-full mb-3 mt-3">
+        Note OS target will always override device type target Links. For
+        example, Android OS Target = abc & Tablet Target = mnk and if device is
+        Android Tablet then target Link will be 'abc'.
+      </h2>
+      <br />
     </React.Fragment>
   );
 
@@ -532,6 +658,10 @@ function HomePage(props: any) {
         label="Enter Link ID"
         variant="outlined"
       />
+
+      {advnceToogle}
+      {advanceLinkOptions && linkAdvanceUI}
+
       <br />
 
       <h3 className="text-sm text-black font-mono font-bold text-center">

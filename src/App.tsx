@@ -19,9 +19,11 @@ import {
   useNavigate,
 } from "react-router-dom";
 import { LinkDaum } from "./extras/types";
+import { useMatch } from "react-router-dom";
 
 function App() {
   const location = useLocation();
+  const match = useMatch("/:linkId");
   const [color, setColor] = useState<string>("");
   const [point, setPoint] = useState<number>(0);
   const [linkData, setLinkData] = useState<LinkDaum>();
@@ -59,7 +61,7 @@ function App() {
 
   return (
     <div className="overflow-hidden">
-      <UpMenu />
+      {!match && <UpMenu />}
 
       <ColorContext.Provider
         value={{
@@ -84,18 +86,20 @@ function App() {
             />
           )}
 
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/:id" element={<RedirectionPage />} />
-
-              <Route path="/profile" element={<ProfilePage />} />
-              <Route path="/update-link-components/:linkId" element={<UpdatePage />} />
-              <Route
-                path="/:linkId"
-                element={<ConditionallyRedirectingRoute />}
-              />
-              <Route path="/notfound" element={<NotFound />} />
-            </Routes>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/:id" element={<RedirectionPage />} />
+            <Route path="/profile-user/:id" element={<ProfilePage />} />
+            <Route
+              path="/update-link-components/:linkId"
+              element={<UpdatePage />}
+            />
+            <Route
+              path="/:linkId"
+              element={<ConditionallyRedirectingRoute />}
+            />
+            <Route path="/notfound" element={<NotFound />} />
+          </Routes>
           {/* <Home /> */}
           {/* <NotFound/> */}
           {/* <RedirectionPage /> */}
@@ -103,9 +107,9 @@ function App() {
           {/* <ProfilePage /> */}
         </LinkContext.Provider>
       </ColorContext.Provider>
-      <FaqList />
-      <NewsLater />
-      <Footer />
+      {!match && <FaqList />}
+      {!match && <NewsLater />}
+      {!match && <Footer />}
     </div>
   );
 }

@@ -237,7 +237,9 @@ function UpMenu(props: any) {
             <br />
 
             <div className="flex items-center justify-between">
-              <Link to={`/profile`}>
+              <Link
+                to={`/profile-user/${localStorage.key(0)?.substring(0, 5)}`}
+              >
                 <Button sx={{ width: "140px" }} variant="outlined">
                   View Profile
                 </Button>
@@ -260,21 +262,20 @@ function UpMenu(props: any) {
       {profileModel}
       <div
         ref={headerRef}
-        className="w-full flex items-center justify-between shadow-md bg-gradient-to-r from-yellow-200 via-gray-100 to-yellow-200"
+        className="w-full flex items-center justify-between p-2 shadow-md bg-gradient-to-r from-yellow-200 via-gray-100 to-yellow-200"
       >
-        <div>
+        {/* <div>
           <IconButton onClick={() => setOpen(true)}>
             <MenuIcon className="ml-2 md:ml-6" fontSize="large" />
           </IconButton>
-        </div>
+        </div> */}
 
-        <div className="flex items-center justify-center">
-          <img alt="" src={LogoImage} className="w-10 h-10" />
+        <div className="flex ml-2 items-center justify-center">
+          <img alt="" src={LogoImage} className="w-8 h-8" />
           <Link to="/">
-            {" "}
             <h1
               style={{ color: "#4081EB" }}
-              className="p-5 text-center font-bold text-xl sm:text-4xl"
+              className="text-center ml-2 text-xl sm:trext-4xl"
             >
               Appnor.co®
             </h1>
@@ -282,7 +283,7 @@ function UpMenu(props: any) {
         </div>
 
         <IconButton onClick={handleDialogOpen}>
-          <img alt="" className="w-9 h-9 md:w-14 md:h-14" src={ProfileImage} />
+          <img alt="" className="w-7 h-7 " src={ProfileImage} />
         </IconButton>
       </div>
     </div>

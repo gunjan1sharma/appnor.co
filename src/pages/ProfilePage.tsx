@@ -134,7 +134,7 @@ function ProfilePage(props: any) {
   );
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center mt-5">
       {backdrop}
       <div className="flex w-fit items-center border-2 border-dotted border-blue-500 m-3 shadow-lg flex-col p-5">
         <div className="flex items-center justify-between">

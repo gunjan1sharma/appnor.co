@@ -18,7 +18,7 @@ function Footer(props: any) {
       <Link to={url}>
         <h5
           style={{ fontSize: "13px" }}
-          className="text-white line-clamp-1 text-centre ml-5"
+          className="text-white line-clamp-1 text-centre ml-5 sm:m-1"
         >
           {heading}
         </h5>
@@ -36,8 +36,8 @@ function Footer(props: any) {
           </h1>
         </div>
 
-        <div className="w-100%">
-          <div className="p-5 container grid grid-cols-3 md:grid-cols-4 gap-2 w-full">
+        <div className="w-fuyll">
+          <div className="p-2 container grid grid-cols-3 md:grid-cols-4 gap-2 w-full">
             {heading("Docbay.in®", "https://docbay.in")}
             {heading("Profileo.me®", "https://profileo.me")}
             {heading("EscreenshotX®", "https://escreenshotx.web.app")}

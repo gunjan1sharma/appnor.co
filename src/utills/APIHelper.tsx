@@ -1,10 +1,12 @@
 export const API_BASE_URLL = "https://appnor-backend.onrender.com/";
+//export const API_BASE_URLL = "http://192.168.1.88:9999/";
 export const SHORTLINK = "appnor/v1/api/link/shortLink?";
 export const CHECKIDAVAILABILITY = "appnor/v1/api/link/checkIdAvailability?";
 export const FETCH_LINK = "appnor/v1/api/link/fetchLink?";
 export const FETCHUSERALLLINK = "appnor/v1/api/link/fetchUserAllLink?";
 export const UPDATELINK = "appnor/v1/api/link/updateLink?";
 export const DELETELINK = "appnor/v1/api/link/deleteLink?";
+export const FETCHTITLE = "extras/v1/api/parsing/fetch-title?";
 
 export const sampleLinkShortedResponse = {
   status: "success",
