@@ -359,6 +359,17 @@ function HomePage(props: any) {
       });
   }
 
+  async function getAuthToken() {
+    const auth = getAuth(app);
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    const token = await auth.currentUser?.getIdToken;
+    const gtoken = await auth.currentUser?.getIdTokenResult;
+
+    console.log(`token : ${token}`);
+    console.log(`gtoken : ${gtoken}`);
+    alert(`token : ${token}`);
+  }
+
   function testLink() {
     const link = audioResponse?.shortedLinkData.completeShortLink;
     if (link === "" || link.length < 5 || link === undefined) {
@@ -467,6 +478,7 @@ function HomePage(props: any) {
     <React.Fragment>
       <TextField
         fullWidth
+        onClick={getAuthToken}
         value={title}
         type="text"
         onChange={(e) => setTitle(e.target.value)}
